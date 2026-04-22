@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://piedpiper-8ve5.onrender.com//api"
+const API_BASE_URL = "https://piedpiper-8ve5.onrender.com/api"
 // const API_BASE_URL = "http://localhost:5000/api"
 
 // Helper to get token from localStorage
