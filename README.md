@@ -8,4 +8,4 @@ A collection of deliberately vulnerable labs designed to demonstrate common secu
 - Improve defensive security skills
 
 ### Topics Covered
-- Mass Assignment vulnerability
+- [Mass Assignment vulnerability](https://github.com/ammarsabit/vuln-labs/tree/main/mass_assignment)
