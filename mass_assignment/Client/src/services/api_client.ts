@@ -1,4 +1,5 @@
-const API_BASE_URL = "http://localhost:5000/api"
+const API_BASE_URL = "https://vuln-labs-mass-assignment.onrender.com/api"
+// const API_BASE_URL = "http://localhost:5000/api"
 
 // Helper to get token from localStorage
 export const getToken = (): string | null => {
