@@ -41,6 +41,7 @@ export interface FlagResponse {
 
 export interface UpdateEmailResponse {
   message: string
+  token: string
   user: User
 }
 

@@ -1,67 +1,84 @@
-import { useState, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { User, Mail, LogOut, ArrowLeft, Check, Pencil, Loader2 } from "lucide-react"
-import { useAuth } from "../context/auth-context"
-import { updateEmail } from "../services/api_client"
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  User,
+  Mail,
+  LogOut,
+  ArrowLeft,
+  Check,
+  Pencil,
+  Loader2,
+} from "lucide-react";
+import { useAuth } from "../context/auth-context";
+import { updateEmail, setToken } from "../services/api_client";
 
 export function ProfilePage() {
-  const { user, isLoading: authLoading, isAuthenticated, logout, refreshUser } = useAuth()
-  const navigate = useNavigate()
+  const {
+    user,
+    isLoading: authLoading,
+    isAuthenticated,
+    logout,
+    refreshUser,
+  } = useAuth();
+  const navigate = useNavigate();
 
-  const [email, setEmail] = useState("")
-  const [isEditing, setIsEditing] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [error, setError] = useState("")
-  const [isSaving, setIsSaving] = useState(false)
+  const [email, setEmail] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      navigate("/login", { replace: true })
+      navigate("/login", { replace: true });
     }
-  }, [authLoading, isAuthenticated, navigate])
+  }, [authLoading, isAuthenticated, navigate]);
 
   useEffect(() => {
     if (user?.email) {
-      setEmail(user.email)
+      setEmail(user.email);
     }
-  }, [user])
+  }, [user]);
 
   const handleSave = async () => {
-    setError("")
-    setIsSaving(true)
+    setError("");
+    setIsSaving(true);
 
     try {
-      await updateEmail(email)
-      await refreshUser()
-      setIsEditing(false)
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
+      const response = await updateEmail(email);
+      if (response.token) {
+        setToken(response.token);
+      }
+      await refreshUser();
+      setIsEditing(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message)
+        setError(err.message);
       } else {
-        setError("Failed to update email")
+        setError("Failed to update email");
       }
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   const handleLogout = () => {
-    logout()
-    navigate("/", { replace: true })
-  }
+    logout();
+    navigate("/", { replace: true });
+  };
 
   if (authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    )
+    );
   }
 
   if (!user) {
-    return null
+    return null;
   }
 
   return (
@@ -76,7 +93,10 @@ export function ProfilePage() {
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
-          <Link to="/" className="flex items-center gap-2 text-xl font-bold text-foreground">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-xl font-bold text-foreground"
+          >
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-mono text-sm font-bold">
               PP
             </span>
@@ -89,7 +109,9 @@ export function ProfilePage() {
 
       {/* Profile Content */}
       <main className="mx-auto max-w-2xl px-6 py-12">
-        <h1 className="mb-8 text-3xl font-bold text-foreground">Profile Settings</h1>
+        <h1 className="mb-8 text-3xl font-bold text-foreground">
+          Profile Settings
+        </h1>
 
         {/* Profile Card */}
         <div className="rounded-2xl border border-border bg-card p-8">
@@ -104,9 +126,15 @@ export function ProfilePage() {
               </div>
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-foreground">{user.name}</h2>
-              <p className="text-muted-foreground">{user.isAdmin ? "Administrator" : "Member"}</p>
-              <p className="mt-1 text-sm text-muted-foreground/70">ID: {user.id}</p>
+              <h2 className="text-2xl font-bold text-foreground">
+                {user.name}
+              </h2>
+              <p className="text-muted-foreground">
+                {user.isAdmin ? "Administrator" : "Member"}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground/70">
+                ID: {user.id}
+              </p>
             </div>
           </div>
 
@@ -115,7 +143,9 @@ export function ProfilePage() {
 
           {/* Email Update Section */}
           <div className="mb-8">
-            <label className="mb-2 block text-sm font-medium text-foreground">Email Address</label>
+            <label className="mb-2 block text-sm font-medium text-foreground">
+              Email Address
+            </label>
             {error && (
               <div className="mb-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
                 {error}
@@ -169,7 +199,9 @@ export function ProfilePage() {
 
           {/* Logout Section */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-foreground">Account Actions</h3>
+            <h3 className="mb-4 text-lg font-semibold text-foreground">
+              Account Actions
+            </h3>
             <button
               onClick={handleLogout}
               className="flex items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-6 py-3 font-semibold text-destructive transition-all hover:bg-destructive/20"
@@ -202,5 +234,5 @@ export function ProfilePage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
