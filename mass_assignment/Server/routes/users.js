@@ -12,9 +12,7 @@ router.get("/profile", authenticate, async (req, res) => {
     return res.status(200).json({
       user: {
         id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-        isAdmin: req.user.isAdmin,
+        name: req.user.name
       },
     });
   } catch (err) {
@@ -40,8 +38,7 @@ router.put("/update_email", authenticate, async (req, res) => {
       user: {
         id: updatedUser._id,
         name: updatedUser.name,
-        email: updatedUser.email,
-        isAdmin: updatedUser.isAdmin,
+        email: updatedUser.email
       },
     });
   } catch (err) {

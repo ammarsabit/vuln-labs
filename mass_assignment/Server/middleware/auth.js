@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Verifies the JWT and attaches the user document to req.user
 const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -12,26 +11,32 @@ const authenticate = async (req, res, next) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    console.log(process.env.JWT_SECRET)
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select('-password');
-    console.log(user, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id).select('name email');
 
     if (!user) {
-      return res.status(401).json({ error: 'User no longer exists' });
+      return res.status(401).json({ error: 'Invalid or expired token' });
     }
 
-    req.user = user;
+    // isAdmin is sourced from the signed token only — never from the DB response
+    req.user = {
+      _id:     user._id,
+      name:    user.name,
+      email:   user.email,
+      isAdmin: decoded.isAdmin === true,
+    };
 
     next();
   } catch (err) {
-    return res.status(401).json({ error: 'Invalid or expired token', err});
+    return res.status(401).json({ error: 'Invalid or expired token' });
   }
 };
 
+// Must be used after authenticate — checks isAdmin from the JWT payload
 const requireAdmin = (req, res, next) => {
   if (!req.user || !req.user.isAdmin) {
-    return res.status(403).json({ error: 'Admin access required' });
+    return res.status(403).json({ error: 'Forbidden' });
   }
   next();
 };
