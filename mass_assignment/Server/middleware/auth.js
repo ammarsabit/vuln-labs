@@ -13,7 +13,7 @@ const authenticate = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id).select('name email');
+    const user = await User.findById(decoded.id).select('name email isAdmin');
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid or expired token' });
