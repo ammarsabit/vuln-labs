@@ -15,6 +15,7 @@ router.get("/profile", authenticate, async (req, res) => {
         id:    req.user._id,
         name:  req.user.name,
         email: req.user.email,
+        isAdmin: req.user.isAdmin,
       },
     });
   } catch (err) {
