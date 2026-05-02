@@ -34,7 +34,11 @@ router.post("/register", async (req, res) => {
       // isAdmin intentionally omitted → defaults to false
     });
 
-    const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: "2h" })
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
 
     return res.status(201).json({
       message: "Account created successfully",
@@ -89,9 +93,11 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "2h",
-    });
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
 
     return res.status(200).json({
       message: "Login successful",
